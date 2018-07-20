@@ -1,7 +1,7 @@
 """
 V 1.0
 This is a script written by Tom Day in python 2.7 that controls Haiku smart fans connected to a network.
-This script ecxploits the fact that the fans are controlled using unencrypted traffic over the network.
+This script exploits the fact that the fans are controlled using unencrypted traffic over the network.
 
 To run on linux: python haiku.py
 """
@@ -13,7 +13,7 @@ import sys
 def clear(numlines):
     print('\n' * numlines)
 
-def IHatePython(UDP_IP, UDP_PORT):
+def main(UDP_IP, UDP_PORT):
 #get speed to set the fan at
     SPEED = raw_input ("Enter the fan's speed (0-7): ")
 #create message to send to fan
@@ -31,16 +31,26 @@ def IHatePython(UDP_IP, UDP_PORT):
                      socket.SOCK_DGRAM) # UDP
     sock.sendto(MESSAGE, (UDP_IP, UDP_PORT))
 #Ask if user would like to run script again
-    question = "Would you like to run the script again?"
-    while "the answer is invalid":
-         reply = str(raw_input(question+' (y/n): ')).lower().strip()
-         if reply[0] == 'y' or 'yes':
-            clear(100)
-            IHatePython(UDP_IP, UDP_PORT)
-         if reply[0] == 'n':
+    if yes_no("Would you like to run the script again (y/n)") == True:
+		clear(100)
+            	main(UDP_IP, UDP_PORT)
+    else:
             clear(100)
             print "Goodbye!"
             sys.exit()
+
+def yes_no(answer):
+    yes = set(['yes','y', 'ye', ''])
+    no = set(['no','n'])
+    
+    while True:
+        choice = raw_input(answer).lower()
+        if choice in yes:
+           return True
+        elif choice in no:
+           return False
+        else:
+           print "Please respond with 'yes' or 'no'\n"
 
 #clear screen
 clear(100)
@@ -48,4 +58,4 @@ clear(100)
 UDP_IP = raw_input("Enter the fan's ip (Enter for default): ") or "192.168.1.1"
 #get the fan's open port (Deafault: 31415)
 UDP_PORT = raw_input("Enter the fan's port (Enter for default): ") or 31415
-IHatePython(UDP_IP, UDP_PORT)
+main(UDP_IP, UDP_PORT)
